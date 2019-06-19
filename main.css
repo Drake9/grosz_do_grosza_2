@@ -15,3 +15,14 @@ body{
 }
 */
 
+textarea{
+	resize: none;
+}
+
+.amount{
+	text-align: center;
+}
+
+footer{
+	width: 100%;
+}

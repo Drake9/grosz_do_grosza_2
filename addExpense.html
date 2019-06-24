@@ -71,7 +71,7 @@
 		
 			<div class="container jumbotron shadow-lg">
 			
-				<header class="text-primary">
+				<header>
 					<h1> Dodawanie wydatku </h1>
 				</header>
 				
@@ -102,21 +102,21 @@
 					
 					<label for="radioPanel"> Sposób płatności </label>
 					<div class="form-group" id="radioPanel">
-						<div class="custom-control custom-radio">
-							<input type="radio" id="cash" value="g" name="customRadio" class="custom-control-input">
-							<label class="custom-control-label" for="cash"> Gotówka </label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="cash" value="g" required>
+							<label class="form-check-label" for="cash"> Gotówka </label>
 						</div>
-						<div class="custom-control custom-radio">
-							<input type="radio" id="transfer" value="p" name="customRadio" class="custom-control-input">
-							<label class="custom-control-label" for="transfer"> Przelew </label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="transfer" value="p" required>
+							<label class="form-check-label" for="transfer"> Przelew </label>
 						</div>
-						<div class="custom-control custom-radio">
-							<input type="radio" id="debit card" value="d" name="customRadio" class="custom-control-input">
-							<label class="custom-control-label" for="debit card"> Karta debetowa </label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="debit card" value="d" required>
+							<label class="form-check-label" for="debit card"> Karta debetowa </label>
 						</div>
-						<div class="custom-control custom-radio">
-							<input type="radio" id="credit card" value="k" name="customRadio" class="custom-control-input">
-							<label class="custom-control-label" for="credit card"> Karta kredytowa </label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="credit card" value="k" required>
+							<label class="form-check-label" for="credit card"> Karta kredytowa </label>
 						</div>
 					</div>
 					

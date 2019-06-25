@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<title>Grosz do grosza</title>
+	<meta name="description" content="Aplikacja internetowa do planowania domowego budżetu" />
+	<meta name="keywords" content="budżet, oszczędzanie, pieniądze, planowanie, wydatki" />
+	<meta name="author" content="Marcin Zapała" />
+	<meta http-equiv="X-Ua-Compatible" content="IE=edge">
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="main.css" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Exo:400,700&display=swap&subset=latin-ext" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+	
+</head>
+
+<body>
+
+	<div id="wrap">
+
+	<header class="sticky-top">
+	
+		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5 navbar-expand-lg">
+	
+			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
+			
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Przełącznik nawigacji">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		
+			<div class="collapse navbar-collapse" id="mainmenu">
+			
+				<ul class="navbar-nav mr-auto">
+				
+					<li class="nav-item">
+						<a class="nav-link" href="addIncome.html"> Dodaj przychód </a>
+					</li>
+					
+					<li class="nav-item active">
+						<a class="nav-link" href="addExpense.html"> Dodaj wydatek </a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link" href="viewBalance.html"> Przeglądaj bilans </a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link" href="settings.html"> Ustawienia </a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link" href="logout.html"> Wyloguj się </a>
+					</li>
+				
+				</ul>
+			
+			</div>
+			
+		</nav>
+		
+	</header>
+	
+	
+	<main>	
+	
+		<section>
+		
+			<div class="container jumbotron shadow-lg">
+			
+				<header>
+					<h1> Dodawanie wydatku </h1>
+				</header>
+				
+				<hr class="my-4">
+				
+				<form action="addIncome.php" method="post" enctype="multipart/form-data">
+				
+					<div class="form-group">
+						<label for="amount"> Kwota wydatku </label>
+						<input type="number" class="form-control" id="amount" step="0.01" required>
+					</div>
+				
+					<div class="form-group">
+						<label for="amount"> Data </label>
+						<input type="date" class="form-control" id="date" name="date" required>
+					</div>
+				
+					<div class="form-group">
+						<label for="category"> Kategoria </label>
+						<select class="custom-select form-control" id="category" name="category" required>
+							<option value=""> Wybierz kategorię </option>
+							<option value="j"> Jedzenie </option>
+							<option value="m"> Mieszkanie </option>
+							<option value="tr"> Transport </option>
+							<option value="te"> Telekomunikacja </option>
+							<option value="i"> Inne </option>
+						</select>
+					</div>
+					
+					<label class="radio control-label"> Sposób płatności </label>
+					<div class="form-group form-control" id="radioPanel">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="cash" value="g" required>
+							<label class="form-check-label" for="cash"> Gotówka </label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="transfer" value="p" required>
+							<label class="form-check-label" for="transfer"> Przelew </label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="debitCard" value="d" required>
+							<label class="form-check-label" for="debitCard"> Karta debetowa </label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="radio" id="creditCard" value="k" required>
+							<label class="form-check-label" for="creditCard"> Karta kredytowa </label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="comment"> Komentarz (opcjonalnie) </label>
+						<textarea class="form-control" name="comment" id="comment" rows="2" cols="50" maxlength="100" minlength="10"></textarea>
+					</div>
+					
+					<button type="submit" class="btn btn-success"> Dodaj </button>
+					<button type="reset" class="btn btn-warning mx-sm-3"> Wyczyść </button>
+					<a class="btn btn-danger" href="menu.html"> Anuluj </a>
+				</form>
+				
+			</div>
+		
+		</section>
+		
+	</main>
+	</div>
+	
+	<footer class="page-footer font-small bg-primary text-white mt-auto border-top">
+
+	  <div class="footer-copyright text-center py-3">
+		GroszDoGrosza.pl © 2019; Icons made by <a href="https://www.flaticon.com/authors/smashicons" class="badge badge-secondary" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" class="badge badge-secondary" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" class="badge badge-secondary" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+	  </div>
+	  
+	</footer>
+	
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	
+	<script src="js/bootstrap.min.js"></script>
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="addTransaction.js"></script>
+	
+</body>
+</html>

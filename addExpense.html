@@ -92,6 +92,7 @@
 					<div class="form-group">
 						<label for="category"> Kategoria </label>
 						<select class="custom-select form-control" id="category" name="category" required>
+							<option value=""> Wybierz kategorię </option>
 							<option value="j"> Jedzenie </option>
 							<option value="m"> Mieszkanie </option>
 							<option value="tr"> Transport </option>
@@ -100,8 +101,8 @@
 						</select>
 					</div>
 					
-					<label for="radioPanel"> Sposób płatności </label>
-					<div class="form-group" id="radioPanel">
+					<label class="radio control-label"> Sposób płatności </label>
+					<div class="form-group form-control" id="radioPanel">
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="radio" id="cash" value="g" required>
 							<label class="form-check-label" for="cash"> Gotówka </label>
@@ -111,12 +112,12 @@
 							<label class="form-check-label" for="transfer"> Przelew </label>
 						</div>
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="debit card" value="d" required>
-							<label class="form-check-label" for="debit card"> Karta debetowa </label>
+							<input class="form-check-input" type="radio" name="radio" id="debitCard" value="d" required>
+							<label class="form-check-label" for="debitCard"> Karta debetowa </label>
 						</div>
 						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="credit card" value="k" required>
-							<label class="form-check-label" for="credit card"> Karta kredytowa </label>
+							<input class="form-check-input" type="radio" name="radio" id="creditCard" value="k" required>
+							<label class="form-check-label" for="creditCard"> Karta kredytowa </label>
 						</div>
 					</div>
 					
@@ -127,7 +128,7 @@
 					
 					<button type="submit" class="btn btn-success"> Dodaj </button>
 					<button type="reset" class="btn btn-warning mx-sm-3"> Wyczyść </button>
-					<a href="menu.html"><button type="button" class="btn btn-danger"> Anuluj </button></a>
+					<a class="btn btn-danger" href="menu.html"> Anuluj </a>
 				</form>
 				
 			</div>

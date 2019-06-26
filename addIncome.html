@@ -15,7 +15,22 @@
 	<link href="main.css" rel="stylesheet" type="text/css" />
 	<link href="https://fonts.googleapis.com/css?family=Exo:400,700&display=swap&subset=latin-ext" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+
+	<link rel="stylesheet" href="jquery-ui/jquery-ui.min.css">
+	<script src="jquery-ui/external/jquery/jquery.js"></script>
+	<script src="jquery-ui/jquery-ui.min.js"></script>
+	<script src="jquery-ui/datepicker-pl.js"></script>
 	
+	<script>
+	$( function() {
+		$.datepicker.setDefaults( $.datepicker.regional[ "pl" ] );
+		$( "#date" ).datepicker({
+			
+			dateFormat: "yy-mm-dd"
+		});
+	} );
+	</script>
+
 </head>
 
 <body>
@@ -85,8 +100,8 @@
 					</div>
 				
 					<div class="form-group">
-						<label for="amount"> Data </label>
-						<input type="date" class="form-control" id="date" name="date" required>
+						<label for="date"> Data </label>
+						<input type="text" class="form-control" id="date" name="date" required>
 					</div>
 				
 					<div class="form-group">
@@ -125,12 +140,9 @@
 	  
 	</footer>
 	
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 	
 	<script src="js/bootstrap.min.js"></script>
-	<script src="jquery-3.2.1.min.js"></script>
 	<script src="addTransaction.js"></script>
 	
 </body>

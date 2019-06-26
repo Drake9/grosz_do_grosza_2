@@ -52,6 +52,17 @@ footer{
 	background-color: #261758 !important;
 }
 
+.ui-state-highlight{
+	color: #ffffff !important;
+	background-color: #d4b16a !important;
+	border-color: #805c15 !important;
+}
+
+.ui-state-active{
+	background-color: #515192 !important;
+	border-color: #13073a !important;
+}
+
 /**********************************************/
 
 @media only screen and (max-width: 920px)/*, (min-device-width: 768px) and (max-device-width: 1024px)*/{

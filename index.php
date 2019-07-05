@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION['logged_id'])) {
+	header('Location: menu.php');
+	exit();
+}
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -38,16 +46,33 @@
 			<div class="container jumbotron shadow-lg">
 			
 				<header>
-					<h1> Menu </h1>
+					<h1> Witamy! </h1>
 				</header>
+				
+				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.html">tutaj</a>.</p>
 				
 				<hr class="my-4">
 				
-				<a href="addIncome.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj przychód</a>
-				<a href="addExpense.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj wydatek</a>
-				<a href="viewBalance.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Przeglądaj bilans</a>
-				<a href="settings.html" class="btn btn-info btn-lg btn-block my-3" role="button">Ustawienia</a>
-				<a href="logout.html" class="btn btn-secondary btn-lg btn-block my-3" role="button">Wyloguj</a>
+				<form method="post" action="menu.php">
+					<div class="form-group">
+						<label for="inputLogin">Login:</label>
+						<input type="text" class="form-control" id="inputLogin" name="login" placeholder="..." required>
+					</div>
+					<div class="form-group">
+						<label for="inputPassword1">Hasło:</label>
+						<input type="password" class="form-control" id="inputPassword1" name="password" placeholder="..." required>
+					</div>
+					
+					<?php
+					if (isset($_SESSION['bad_attempt'])) {
+						$info = "<p>Niepoprawny login lub hasło!</p>";
+						echo $info;
+						unset($_SESSION['bad_attempt']);
+					}
+					?>
+					
+					<button type="submit" class="btn btn-primary mt-3">Zaloguj się</button>
+				</form>
 				
 			</div>
 		

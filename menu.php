@@ -1,3 +1,47 @@
+<?php
+session_start();
+
+require_once 'database.php';
+
+if (!isset($_SESSION['logged_id'])) {
+
+	if (isset($_POST['login'])) {
+		
+		$login = filter_input(INPUT_POST, 'login');
+		$password = filter_input(INPUT_POST, 'password');
+		
+		//echo $login . " " .$password;
+		
+		$userQuery = $db->prepare('SELECT id, password FROM users WHERE login = :login');
+		$userQuery->bindValue(':login', $login, PDO::PARAM_STR);
+		$userQuery->execute();
+		
+		//echo $userQuery->rowCount();
+		
+		$user = $userQuery->fetch();
+		
+		//echo "<br>";
+		//echo $user['id'] . "<br>" . $user['password'] . "<br>";
+		//echo password_hash($password, PASSWORD_DEFAULT);
+		
+		if ($user && password_verify($password, $user['password'])) {
+			$_SESSION['logged_id'] = $user['id'];
+			unset($_SESSION['bad_attempt']);
+		} else {
+			$_SESSION['bad_attempt'] = true;
+			header('Location: index.php');
+			exit();
+			//echo "<br>BAD ATTEMPT!";
+		}
+			
+	} else {
+		
+		header('Location: index.php');
+		exit();
+	}
+}
+
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -38,25 +82,16 @@
 			<div class="container jumbotron shadow-lg">
 			
 				<header>
-					<h1> Witamy! </h1>
+					<h1> Menu </h1>
 				</header>
-				
-				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.html">tutaj</a>.</p>
 				
 				<hr class="my-4">
 				
-				<form method="post">
-					<div class="form-group">
-						<label for="inputLogin">Login:</label>
-						<input type="text" class="form-control" id="inputLogin" placeholder="..." required>
-					</div>
-					<div class="form-group">
-						<label for="inputPassword1">Hasło:</label>
-						<input type="password" class="form-control" id="inputPassword1" placeholder="..." required>
-					</div>
-					
-					<button type="submit" class="btn btn-primary mt-3">Zaloguj się</button>
-				</form>
+				<a href="addIncome.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj przychód</a>
+				<a href="addExpense.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj wydatek</a>
+				<a href="viewBalance.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Przeglądaj bilans</a>
+				<a href="settings.php" class="btn btn-info btn-lg btn-block my-3" role="button">Ustawienia</a>
+				<a href="logout.php" class="btn btn-secondary btn-lg btn-block my-3" role="button">Wyloguj</a>
 				
 			</div>
 		

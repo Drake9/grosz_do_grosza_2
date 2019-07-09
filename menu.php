@@ -12,7 +12,7 @@ if (!isset($_SESSION['logged_id'])) {
 		
 		//echo $login . " " .$password;
 		
-		$userQuery = $db->prepare('SELECT id, password FROM users WHERE login = :login');
+		$userQuery = $database->prepare('SELECT id, password FROM users WHERE login = :login');
 		$userQuery->bindValue(':login', $login, PDO::PARAM_STR);
 		$userQuery->execute();
 		
@@ -69,7 +69,7 @@ if (!isset($_SESSION['logged_id'])) {
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
 			
 		</nav>
 		

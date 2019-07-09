@@ -1,3 +1,33 @@
+<?php
+session_start();
+
+if (isset($_SESSION['logged_id'])) {
+	header('Location: menu.php');
+	exit();
+}
+
+if (!isset($_SESSION['correctRegistration']))
+	{
+		header('Location: index.php');
+		exit();
+	}
+	else
+	{
+		unset($_SESSION['correctRegistration']);
+	}
+	
+	//Usuwanie zmiennych pamiętających wartości wpisane do formularza
+	if (isset($_SESSION['fr_login'])) unset($_SESSION['fr_login']);
+	if (isset($_SESSION['fr_email'])) unset($_SESSION['fr_email']);
+	if (isset($_SESSION['fr_password1'])) unset($_SESSION['fr_password1']);
+	if (isset($_SESSION['fr_password2'])) unset($_SESSION['fr_password2']);
+	
+	//Usuwanie błędów rejestracji
+	if (isset($_SESSION['e_login'])) unset($_SESSION['e_login']);
+	if (isset($_SESSION['e_email'])) unset($_SESSION['e_email']);
+	if (isset($_SESSION['e_password'])) unset($_SESSION['e_password']);
+	if (isset($_SESSION['e_bot'])) unset($_SESSION['e_bot']);
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -25,7 +55,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
 			
 		</nav>
 		
@@ -38,31 +68,14 @@
 			<div class="container jumbotron shadow-lg">
 			
 				<header>
-					<h1> Rejestracja </h1>
+					<h1> Witamy! </h1>
 				</header>
 				
-				<hr class="my-4">
+				<p class="lead text-justify">Dziękujemy za rejestrację w serwisie! Możesz już zalogować się na swoje konto.</p>
 				
-				<form method="post">
-					<div class="form-group">
-						<label for="inputLogin">Login:</label>
-						<input type="text" class="form-control" id="inputLogin" placeholder="..." required>
-					</div>
-					<div class="form-group">
-						<label for="inputEmail1">E-mail:</label>
-						<input type="email" class="form-control" id="inputEmail1" placeholder="..." required>
-					</div>
-					<div class="form-group">
-						<label for="inputPassword1">Hasło:</label>
-						<input type="password" class="form-control" id="inputPassword1" placeholder="..." required>
-					</div>
-					<div class="form-group">
-						<label for="inputPassword2">Powtórz hasło:</label>
-						<input type="password" class="form-control" id="inputPassword2" placeholder="..." required>
-					</div>
-					
-					<button type="submit" class="btn btn-primary mt-3">Zarejestruj się</button>
-				</form>
+				<hr class="my-4">
+	
+				<a href="index.php" class="btn btn-primary">Zaloguj się na swoje konto!</a>
 				
 			</div>
 		

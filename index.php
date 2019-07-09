@@ -33,7 +33,7 @@ if (isset($_SESSION['logged_id'])) {
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
 			
 		</nav>
 		
@@ -49,7 +49,7 @@ if (isset($_SESSION['logged_id'])) {
 					<h1> Witamy! </h1>
 				</header>
 				
-				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.html">tutaj</a>.</p>
+				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.php">tutaj</a>.</p>
 				
 				<hr class="my-4">
 				

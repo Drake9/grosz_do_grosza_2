@@ -1,3 +1,58 @@
+<?php
+session_start();
+	
+if (!isset($_SESSION['logged_id'])) {
+	header('Location: index.php');
+	exit();
+}
+else{
+	require_once 'database.php';	
+	try{
+		$query = $database->prepare('SELECT id, name FROM income_categories WHERE user_id = :logged_id');
+		$query->bindParam(':logged_id', $_SESSION['logged_id']);
+		$query->execute();
+		$userIncomeCategories = $query->fetchAll();
+	}
+	catch(PDOException $error){
+		echo "Error: " . $error->getMessage();
+	}
+}
+
+if(isset($_POST['amount'])){
+	
+	$correctIncomeData = true;
+	
+	$amount = $_POST['amount'];
+	$date = $_POST['date'];
+	$incomeCategory = $_POST['category'];
+	$comment = $_POST['comment'];
+	
+	if($amount <= 0){
+		$correctIncomeData = false;
+		$_SESSION['e_amount'] = "Kwota musi być większa od zera!";
+	}
+	
+	if($correctIncomeData == true){
+		try{
+			$query = $database->prepare('INSERT INTO incomes VALUES (NULL, :userID, :amount, :date, :category, :comment)');
+			$query->bindParam(':userID', $_SESSION['logged_id']);
+			$query->bindParam(':amount', $amount);
+			$query->bindParam(':date', $date);
+			$query->bindParam(':category', $incomeCategory);
+			$query->bindParam(':comment', $comment);
+			$query->execute();
+		}
+		catch(PDOException $error){
+			echo "Error: " . $error->getMessage();
+		}
+		
+		if(!isset($error)){
+			$_SESSION['incomeAdded'] = true;
+		}
+	}
+}
+
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -20,16 +75,7 @@
 	<script src="jquery-ui/external/jquery/jquery.js"></script>
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 	<script src="jquery-ui/datepicker-pl.js"></script>
-	
-	<script>
-	$( function() {
-		$.datepicker.setDefaults( $.datepicker.regional[ "pl" ] );
-		$( "#date" ).datepicker({
-			
-			dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
+	<script src="addIncome.js"></script>
 
 </head>
 
@@ -41,7 +87,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5 navbar-expand-lg">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
 			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Przełącznik nawigacji">
 				<span class="navbar-toggler-icon"></span>
@@ -52,23 +98,23 @@
 				<ul class="navbar-nav mr-auto">
 				
 					<li class="nav-item active">
-						<a class="nav-link" href="addIncome.html"> Dodaj przychód </a>
+						<a class="nav-link" href="addIncome.php"> Dodaj przychód </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="addExpense.html"> Dodaj wydatek </a>
+						<a class="nav-link" href="addExpense.php"> Dodaj wydatek </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="viewBalance.html"> Przeglądaj bilans </a>
+						<a class="nav-link" href="viewBalance.php"> Przeglądaj bilans </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="settings.html"> Ustawienia </a>
+						<a class="nav-link" href="settings.php"> Ustawienia </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="logout.html"> Wyloguj się </a>
+						<a class="nav-link" href="logout.php"> Wyloguj się </a>
 					</li>
 				
 				</ul>
@@ -87,16 +133,32 @@
 			<div class="container jumbotron shadow-lg">
 			
 				<header>
-					<h1> Dodawanie przychodu </h1>
+					<h1>
+						<?php
+							if(!isset($_SESSION['incomeAdded'])){
+								echo "Dodawanie przychodu";
+							}
+							else{
+								echo "Dodano przychód. Czy chcesz dodać kolejny?";
+								unset($_SESSION['incomeAdded']);
+							}
+						?>
+					</h1>
 				</header>
 				
 				<hr class="my-4">
 				
-				<form action="addIncome.php" method="post" enctype="multipart/form-data">
+				<form method="post" enctype="multipart/form-data">
 				
 					<div class="form-group">
 						<label for="amount"> Kwota przychodu </label>
-						<input type="number" class="form-control" id="amount" step="0.01" required>
+						<input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+						<?php
+							if(isset($_SESSION['e_amount'])){
+								echo '<div class="error">'.$_SESSION['e_amount'].'</div>';
+								unset($_SESSION['e_amount']);
+							}
+						?>
 					</div>
 				
 					<div class="form-group">
@@ -108,10 +170,11 @@
 						<label for="category"> Kategoria </label>
 						<select class="custom-select form-control" id="category" name="category" required>
 							<option value=""> Wybierz kategorię </option>
-							<option value="w"> Wynagrodzenie </option>
-							<option value="o"> Odsetki </option>
-							<option value="s"> Sprzedaż allegro </option>
-							<option value="i"> Inne </option>
+							<?php
+								foreach($userIncomeCategories as $category){
+									echo '<option value='.$category['id'].'> '.$category['name'].' </option>';
+								}
+							?>
 						</select>
 					</div>
 					
@@ -122,7 +185,7 @@
 					
 					<button type="submit" class="btn btn-success"> Dodaj </button>
 					<button type="reset" class="btn btn-warning mx-sm-3"> Wyczyść </button>
-					<a class="btn btn-danger" href="menu.html"> Anuluj </a>
+					<a class="btn btn-danger" href="menu.php"> Anuluj </a>
 				</form>
 				
 			</div>

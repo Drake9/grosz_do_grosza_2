@@ -7,8 +7,7 @@
 		exit();
 	}
 	
-	if (isset($_POST['email']))
-	{
+	if (isset($_POST['email'])){
 		//Udana walidacja? Załóżmy, że tak!
 		$correctRegistration = true;
 		
@@ -16,14 +15,12 @@
 		$login = $_POST['login'];
 		
 		//Sprawdzenie długości nicka
-		if ((strlen($login)<3) || (strlen($login)>20))
-		{
+		if ((strlen($login) < 3) || (strlen($login) > 20)){
 			$correctRegistration = false;
 			$_SESSION['e_login'] = "Login musi posiadać od 3 do 20 znaków!";
 		}
 		
-		if (ctype_alnum($login) == false)
-		{
+		if (ctype_alnum($login) == false){
 			$correctRegistration = false;
 			$_SESSION['e_login'] = "Nick może składać się tylko z liter i cyfr (bez polskich znaków)";
 		}
@@ -32,8 +29,7 @@
 		$email = $_POST['email'];
 		$emailB = filter_var($email, FILTER_SANITIZE_EMAIL);
 		
-		if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email))
-		{
+		if ((filter_var($emailB, FILTER_VALIDATE_EMAIL) == false) || ($emailB != $email)){
 			$correctRegistration = false;
 			$_SESSION['e_email'] = "Podaj poprawny adres e-mail!";
 		}
@@ -42,14 +38,12 @@
 		$password1 = $_POST['password1'];
 		$password2 = $_POST['password2'];
 		
-		if ((strlen($password1) < 8) || (strlen($password1) > 30))
-		{
+		if ((strlen($password1) < 8) || (strlen($password1) > 30)){
 			$correctRegistration = false;
 			$_SESSION['e_password'] = "Hasło musi posiadać od 8 do 30 znaków!";
 		}
 		
-		if ($password1 != $password2)
-		{
+		if ($password1 != $password2){
 			$correctRegistration = false;
 			$_SESSION['e_password'] = "Podane hasła nie są identyczne!";
 		}	
@@ -64,8 +58,7 @@
 		
 		$reply = json_decode($check);
 		
-		if ($reply->success == false)
-		{
+		if ($reply->success == false){
 			$correctRegistration = false;
 			$_SESSION['e_bot'] = "Potwierdź, że nie jesteś robotem!";
 		}		

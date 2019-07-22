@@ -17,6 +17,10 @@ footer{
 	width: 100%;
 }
 
+.error{
+	color: red;
+}
+
 .bg-primary{
 	background-color: #226666 !important;
 }

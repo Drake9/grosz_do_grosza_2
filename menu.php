@@ -1,3 +1,47 @@
+<?php
+session_start();
+
+require_once 'database.php';
+
+if (!isset($_SESSION['logged_id'])) {
+
+	if (isset($_POST['login'])) {
+		
+		$login = filter_input(INPUT_POST, 'login');
+		$password = filter_input(INPUT_POST, 'password');
+		
+		//echo $login . " " .$password;
+		
+		$userQuery = $database->prepare('SELECT id, password FROM users WHERE login = :login');
+		$userQuery->bindValue(':login', $login, PDO::PARAM_STR);
+		$userQuery->execute();
+		
+		//echo $userQuery->rowCount();
+		
+		$user = $userQuery->fetch();
+		
+		//echo "<br>";
+		//echo $user['id'] . "<br>" . $user['password'] . "<br>";
+		//echo password_hash($password, PASSWORD_DEFAULT);
+		
+		if ($user && password_verify($password, $user['password'])) {
+			$_SESSION['logged_id'] = $user['id'];
+			unset($_SESSION['bad_attempt']);
+		} else {
+			$_SESSION['bad_attempt'] = true;
+			header('Location: index.php');
+			exit();
+			//echo "<br>BAD ATTEMPT!";
+		}
+			
+	} else {
+		
+		header('Location: index.php');
+		exit();
+	}
+}
+
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -25,7 +69,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
 			
 		</nav>
 		
@@ -43,11 +87,11 @@
 				
 				<hr class="my-4">
 				
-				<a href="addIncome.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj przychód</a>
-				<a href="addExpense.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj wydatek</a>
-				<a href="viewBalance.html" class="btn btn-primary btn-lg btn-block my-3" role="button">Przeglądaj bilans</a>
-				<a href="settings.html" class="btn btn-info btn-lg btn-block my-3" role="button">Ustawienia</a>
-				<a href="logout.html" class="btn btn-secondary btn-lg btn-block my-3" role="button">Wyloguj</a>
+				<a href="addIncome.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj przychód</a>
+				<a href="addExpense.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Dodaj wydatek</a>
+				<a href="viewBalance.php" class="btn btn-primary btn-lg btn-block my-3" role="button">Przeglądaj bilans</a>
+				<a href="settings.php" class="btn btn-info btn-lg btn-block my-3" role="button">Ustawienia</a>
+				<a href="logout.php" class="btn btn-secondary btn-lg btn-block my-3" role="button">Wyloguj</a>
 				
 			</div>
 		

@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION['logged_id'])) {
+	header('Location: menu.php');
+	exit();
+}
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -25,7 +33,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="50" height="50" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl</a>
 			
 		</nav>
 		
@@ -41,19 +49,27 @@
 					<h1> Witamy! </h1>
 				</header>
 				
-				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.html">tutaj</a>.</p>
+				<p class="lead text-justify">Witaj w serwisie <i>GroszDoGrosza.pl</i>. Nasza aplikacja pomoże Ci zapanować nad wydatkami i sprawić, że wreszcie odłożysz pieniądze na wymarzony samochód lub wakacje! Jeżeli jeszcze nie posiadasz konta w naszym serwisie, możesz je założyć, klikając <a href="register.php">tutaj</a>.</p>
 				
 				<hr class="my-4">
 				
-				<form method="post">
+				<form method="post" action="menu.php">
 					<div class="form-group">
 						<label for="inputLogin">Login:</label>
-						<input type="text" class="form-control" id="inputLogin" placeholder="..." required>
+						<input type="text" class="form-control" id="inputLogin" name="login" placeholder="..." required>
 					</div>
 					<div class="form-group">
 						<label for="inputPassword1">Hasło:</label>
-						<input type="password" class="form-control" id="inputPassword1" placeholder="..." required>
+						<input type="password" class="form-control" id="inputPassword1" name="password" placeholder="..." required>
 					</div>
+					
+					<?php
+					if (isset($_SESSION['bad_attempt'])) {
+						$info = "<p>Niepoprawny login lub hasło!</p>";
+						echo $info;
+						unset($_SESSION['bad_attempt']);
+					}
+					?>
 					
 					<button type="submit" class="btn btn-primary mt-3">Zaloguj się</button>
 				</form>

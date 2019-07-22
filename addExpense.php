@@ -1,3 +1,72 @@
+<?php
+session_start();
+	
+if (!isset($_SESSION['logged_id'])) {
+	header('Location: index.php');
+	exit();
+}
+else{
+	require_once 'database.php';	
+	try{
+		$query = $database->prepare('SELECT id, name FROM expense_categories WHERE user_id = :logged_id');
+		$query->bindParam(':logged_id', $_SESSION['logged_id']);
+		$query->execute();
+		$userExpenseCategories = $query->fetchAll();
+	}
+	catch(PDOException $error){
+		echo "Error: " . $error->getMessage();
+	}
+	
+	try{
+		$query = $database->prepare('SELECT id, name FROM payment_methods WHERE user_id = :logged_id');
+		$query->bindParam(':logged_id', $_SESSION['logged_id']);
+		$query->execute();
+		$userPaymentMethods = $query->fetchAll();
+	}
+	catch(PDOException $error){
+		echo "Error: " . $error->getMessage();
+	}
+}
+
+if(isset($_POST['amount'])){
+	
+	$correctExpenseData = true;
+	
+	$amount = $_POST['amount'];
+	$date = $_POST['date'];
+	$expenseCategory = $_POST['category'];
+	$paymentMethod = $_POST['paymentMethod'];
+	$comment = $_POST['comment'];
+	if($comment == "")
+		$comment = "-";
+	
+	if($amount <= 0){
+		$correctExpenseData = false;
+		$_SESSION['e_amount'] = "Kwota musi być większa od zera!";
+	}
+	
+	if($correctExpenseData == true){
+		try{
+			$query = $database->prepare('INSERT INTO expenses VALUES (NULL, :userID, :amount, :date, :category, :method, :comment)');
+			$query->bindParam(':userID', $_SESSION['logged_id']);
+			$query->bindParam(':amount', $amount);
+			$query->bindParam(':date', $date);
+			$query->bindParam(':category', $expenseCategory);
+			$query->bindParam(':method', $paymentMethod);
+			$query->bindParam(':comment', $comment);
+			$query->execute();
+		}
+		catch(PDOException $error){
+			echo "Error: " . $error->getMessage();
+		}
+		
+		if(!isset($error)){
+			$_SESSION['expenseAdded'] = true;
+		}
+	}
+}
+
+?>
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -21,16 +90,6 @@
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 	<script src="jquery-ui/datepicker-pl.js"></script>
 	
-	<script>
-	$( function() {
-		$.datepicker.setDefaults( $.datepicker.regional[ "pl" ] );
-		$( "#date" ).datepicker({
-			
-			dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
-	
 </head>
 
 <body>
@@ -41,7 +100,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5 navbar-expand-lg">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
 			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Przełącznik nawigacji">
 				<span class="navbar-toggler-icon"></span>
@@ -52,23 +111,23 @@
 				<ul class="navbar-nav mr-auto">
 				
 					<li class="nav-item">
-						<a class="nav-link" href="addIncome.html"> Dodaj przychód </a>
+						<a class="nav-link" href="addIncome.php"> Dodaj przychód </a>
 					</li>
 					
 					<li class="nav-item active">
-						<a class="nav-link" href="addExpense.html"> Dodaj wydatek </a>
+						<a class="nav-link" href="addExpense.php"> Dodaj wydatek </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="viewBalance.html"> Przeglądaj bilans </a>
+						<a class="nav-link" href="viewBalance.php"> Przeglądaj bilans </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="settings.html"> Ustawienia </a>
+						<a class="nav-link" href="settings.php"> Ustawienia </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="logout.html"> Wyloguj się </a>
+						<a class="nav-link" href="logout.php"> Wyloguj się </a>
 					</li>
 				
 				</ul>
@@ -87,16 +146,32 @@
 			<div class="container jumbotron shadow-lg">
 			
 				<header>
-					<h1> Dodawanie wydatku </h1>
+					<h1>
+						<?php
+							if(!isset($_SESSION['expenseAdded'])){
+								echo "Dodawanie wydatku";
+							}
+							else{
+								echo "Dodano wydatek. Czy chcesz dodać kolejny?";
+								unset($_SESSION['expenseAdded']);
+							}
+						?>
+					</h1>
 				</header>
 				
 				<hr class="my-4">
 				
-				<form action="addIncome.php" method="post" enctype="multipart/form-data">
+				<form method="post" enctype="multipart/form-data">
 				
 					<div class="form-group">
 						<label for="amount"> Kwota wydatku </label>
-						<input type="number" class="form-control" id="amount" step="0.01" required>
+						<input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+						<?php
+							if(isset($_SESSION['e_amount'])){
+								echo '<div class="error">'.$_SESSION['e_amount'].'</div>';
+								unset($_SESSION['e_amount']);
+							}
+						?>
 					</div>
 				
 					<div class="form-group">
@@ -108,32 +183,26 @@
 						<label for="category"> Kategoria </label>
 						<select class="custom-select form-control" id="category" name="category" required>
 							<option value=""> Wybierz kategorię </option>
-							<option value="j"> Jedzenie </option>
-							<option value="m"> Mieszkanie </option>
-							<option value="tr"> Transport </option>
-							<option value="te"> Telekomunikacja </option>
-							<option value="i"> Inne </option>
+							<?php
+								foreach($userExpenseCategories as $category){
+									echo '<option value='.$category['id'].'> '.$category['name'].' </option>';
+								}
+							?>
 						</select>
 					</div>
 					
 					<label class="radio control-label"> Sposób płatności </label>
 					<div class="form-group form-control" id="radioPanel">
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="cash" value="g" required>
-							<label class="form-check-label" for="cash"> Gotówka </label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="transfer" value="p" required>
-							<label class="form-check-label" for="transfer"> Przelew </label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="debitCard" value="d" required>
-							<label class="form-check-label" for="debitCard"> Karta debetowa </label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="radio" id="creditCard" value="k" required>
-							<label class="form-check-label" for="creditCard"> Karta kredytowa </label>
-						</div>
+						<?php
+							foreach($userPaymentMethods as $method){
+								echo '
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="paymentMethod" id='.str_replace(' ', '', $method['name']).' value='.$method['id'].' required>
+										<label class="form-check-label" for='.str_replace(' ', '', $method['name']).'> '.$method['name'].' </label>
+									</div>
+								';
+							}
+						?>
 					</div>
 					
 					<div class="form-group">

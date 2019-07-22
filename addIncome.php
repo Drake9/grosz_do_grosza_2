@@ -26,6 +26,8 @@ if(isset($_POST['amount'])){
 	$date = $_POST['date'];
 	$incomeCategory = $_POST['category'];
 	$comment = $_POST['comment'];
+	if($comment == "")
+		$comment = "-";
 	
 	if($amount <= 0){
 		$correctIncomeData = false;
@@ -75,7 +77,6 @@ if(isset($_POST['amount'])){
 	<script src="jquery-ui/external/jquery/jquery.js"></script>
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 	<script src="jquery-ui/datepicker-pl.js"></script>
-	<script src="addIncome.js"></script>
 
 </head>
 

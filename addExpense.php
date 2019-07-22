@@ -37,6 +37,8 @@ if(isset($_POST['amount'])){
 	$expenseCategory = $_POST['category'];
 	$paymentMethod = $_POST['paymentMethod'];
 	$comment = $_POST['comment'];
+	if($comment == "")
+		$comment = "-";
 	
 	if($amount <= 0){
 		$correctExpenseData = false;
@@ -87,16 +89,6 @@ if(isset($_POST['amount'])){
 	<script src="jquery-ui/external/jquery/jquery.js"></script>
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 	<script src="jquery-ui/datepicker-pl.js"></script>
-	
-	<script>
-	$( function() {
-		$.datepicker.setDefaults( $.datepicker.regional[ "pl" ] );
-		$( "#date" ).datepicker({
-			
-			dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
 	
 </head>
 

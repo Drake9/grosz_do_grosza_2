@@ -1,3 +1,12 @@
+<?php
+session_start();
+	
+if (!isset($_SESSION['logged_id'])) {
+	header('Location: index.php');
+	exit();
+}
+?>
+
 <!DOCTYPE HTML>
 <html lang="pl">
 <head>
@@ -21,20 +30,6 @@
 	<script src="jquery-ui/jquery-ui.min.js"></script>
 	<script src="jquery-ui/datepicker-pl.js"></script>
 	
-	<script>
-	$( function() {
-		$.datepicker.setDefaults( $.datepicker.regional[ "pl" ] );
-		$( "#dateStart" ).datepicker({
-			
-			dateFormat: "yy-mm-dd"
-		});
-		$( "#dateEnd" ).datepicker({
-			
-			dateFormat: "yy-mm-dd"
-		});
-	} );
-	</script>
-	
 </head>
 
 <body>
@@ -50,19 +45,20 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form action="viewCustomBalance.php" method="post" enctype="multipart/form-data">
-						<div class="form-group">
-							<label for="dateStart"> Początek </label>
-							<input type="text" class="form-control" id="dateStart" name="dateStart" required>
-						</div>
-						<div class="form-group">
-							<label for="dateEnd"> Koniec </label>
-							<input type="text" class="form-control" id="dateEnd" name="dateEnd" required>
-						</div>
-					</form>
+					<div class="form-group">
+						<label for="dateStart"> Początek </label>
+						<input type="text" class="form-control" id="dateStart" name="dateStart" required>
+						<div id="dateStartComment" class="error"></div>
+					</div>
+					<div class="form-group">
+						<label for="dateEnd"> Koniec </label>
+						<input type="text" class="form-control" id="dateEnd" name="dateEnd" required>
+						<div id="dateEndComment" class="error"></div>
+						<div id="bothDatesComment" class="error"></div>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="submit" class="btn btn-success" data-dismiss="modal">Potwierdź</button>
+					<button type="submit" class="btn btn-success" id="customBalanceConfirm">Potwierdź</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Anuluj</button>
 				</div>
 			</div>
@@ -76,7 +72,7 @@
 	
 		<nav class="navbar navbar-dark bg-primary border-bottom shadow mb-5 navbar-expand-lg">
 	
-			<a class="navbar-brand" href="menu.html"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
+			<a class="navbar-brand" href="menu.php"><img src="img/coins.png" width="30" height="30" class="d-inline-block mr-1 align-bottom" alt=""> GroszDoGrosza.pl </a>
 			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainmenu" aria-controls="mainmenu" aria-expanded="false" aria-label="Przełącznik nawigacji">
 				<span class="navbar-toggler-icon"></span>
@@ -87,23 +83,23 @@
 				<ul class="navbar-nav mr-auto">
 				
 					<li class="nav-item">
-						<a class="nav-link" href="addIncome.html"> Dodaj przychód </a>
+						<a class="nav-link" href="addIncome.php"> Dodaj przychód </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="addExpense.html"> Dodaj wydatek </a>
+						<a class="nav-link" href="addExpense.php"> Dodaj wydatek </a>
 					</li>
 					
 					<li class="nav-item active">
-						<a class="nav-link" href="viewBalance.html"> Przeglądaj bilans </a>
+						<a class="nav-link" href="viewBalance.php"> Przeglądaj bilans </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="settings.html"> Ustawienia </a>
+						<a class="nav-link" href="settings.php"> Ustawienia </a>
 					</li>
 					
 					<li class="nav-item">
-						<a class="nav-link" href="logout.html"> Wyloguj się </a>
+						<a class="nav-link" href="logout.php"> Wyloguj się </a>
 					</li>
 				
 				</ul>
@@ -129,13 +125,13 @@
 									Okres
 								</button>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-									<a class="dropdown-item" href="#">Bieżący miesiąc</a>
-									<a class="dropdown-item" href="#">Poprzedni miesiąc</a>
-									<a class="dropdown-item" href="#">Bieżący rok</a>
+									<a class="dropdown-item" href="#" id="currentMonth">Bieżący miesiąc</a>
+									<a class="dropdown-item" href="#" id="lastMonth">Poprzedni miesiąc</a>
+									<a class="dropdown-item" href="#" id="currentYear">Bieżący rok</a>
 									<div class="btn dropdown-item" data-toggle="modal" data-target="#customPeriodModal">Niestandardowy</div>
 								</div>
 							</div>
-							<h3>za okres: 01.01.2019 - 31.01.2019</h3>
+							<h3 id="period">za okres: </h3>
 						</div>
 					</div>
 				</div>
@@ -154,19 +150,8 @@
 										<th scope="col" style="width: 50%">suma</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>wynagrodzenie</td>
-										<td class="amount">3000.00</td>
-									</tr>
-									<tr>
-										<td>sprzedaż allegro</td>
-										<td class="amount">250.00</td>
-									</tr>
-									<tr>
-										<th scope="row">suma</th>
-										<th scope="row" class="amount">3250.00</th>
-									</tr>
+								<tbody id="incomesGenerally">
+									
 								</tbody>
 							</table>
 						</div>
@@ -184,23 +169,8 @@
 										<th scope="col" style="width: 50%">suma</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>mieszkanie</td>
-										<td class="amount">1000.00</td>
-									</tr>
-									<tr>
-										<td>jedzenie</td>
-										<td class="amount">750.00</td>
-									</tr>
-									<tr>
-										<td>transport</td>
-										<td class="amount">500.00</td>
-									</tr>
-									<tr>
-										<th scope="row">suma</th>
-										<th scope="row" class="amount">1250.00</th>
-									</tr>
+								<tbody id="expensesGenerally">
+									
 								</tbody>
 							</table>
 						</div>
@@ -222,22 +192,11 @@
 										<th scope="col" style="width: 50%">kwota</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>przychody</td>
-										<td class="amount">3250.00</td>
-									</tr>
-									<tr>
-										<td>wydatki</td>
-										<td class="amount">1250.00</td>
-									</tr>
-									<tr>
-										<th scope="row">bilans</th>
-										<th scope="row" class="amount">2000.00</th>
-									</tr>
+								<tbody id="balance">
+									
 								</tbody>
 							</table>
-							<h5 class="text-success">Gratulacje! Świetnie dysponujesz finansami!</h5>
+							<h5 class="text-center font-weight-bold" id="balanceComment">Gratulacje! Świetnie dysponujesz finansami!</h5>
 						</div>
 					</div>
 				</div>
@@ -262,25 +221,14 @@
 							<table class="table table-striped table-sm">
 								<thead>
 									<tr>
-										<th scope="col">data</th>
-										<th scope="col">kategoria</th>
-										<th scope="col">komentarz</th>
-										<th scope="col">kwota</th>
+										<th scope="col" style="width: 20%">data</th>
+										<th scope="col" style="width: 20%">kategoria</th>
+										<th scope="col" style="width: 40%">komentarz</th>
+										<th scope="col" style="width: 20%">kwota</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>15.01.2019.</td>
-										<td>sprzedaż allegro</td>
-										<td>sprzedaż skutera</td>
-										<td class="amount">250.00</td>
-									</tr>
-									<tr>
-										<td>30.01.2019</td>
-										<td>wynagrodzenie</td>
-										<td>-</td>
-										<td class="amount">3000.00</td>
-									</tr>
+								<tbody id="incomesInDetail">
+									
 								</tbody>
 							</table>
 						</div>
@@ -294,55 +242,14 @@
 							<table class="table table-striped table-sm">
 								<thead>
 									<tr>
-										<th scope="col">data</th>
-										<th scope="col">kategoria</th>
-										<th scope="col">komentarz</th>
-										<th scope="col">kwota</th>
+										<th scope="col" style="width: 20%">data</th>
+										<th scope="col" style="width: 20%">kategoria</th>
+										<th scope="col" style="width: 40%">komentarz</th>
+										<th scope="col" style="width: 20%">kwota</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>01.01.2019</td>
-										<td>jedzenie</td>
-										<td>-</td>
-										<td class="amount">150.00</td>
-									</tr>
-									<tr>
-										<td>07.01.2019</td>
-										<td>jedzenie</td>
-										<td>-</td>
-										<td class="amount">150.00</td>
-									</tr>
-									<tr>
-										<td>10.01.2019.</td>
-										<td>mieszkanie</td>
-										<td>czynsz</td>
-										<td class="amount">1000.00</td>
-									</tr>
-									<tr>
-										<td>14.01.2019</td>
-										<td>jedzenie</td>
-										<td>-</td>
-										<td class="amount">150.00</td>
-									</tr>
-									<tr>
-										<td>21.01.2019</td>
-										<td>jedzenie</td>
-										<td>-</td>
-										<td class="amount">150.00</td>
-									</tr>
-									<tr>
-										<td>28.01.2019</td>
-										<td>transport</td>
-										<td>-</td>
-										<td class="amount">500.00</td>
-									</tr>
-									<tr>
-										<td>28.01.2019</td>
-										<td>jedzenie</td>
-										<td>-</td>
-										<td class="amount">150.00</td>
-									</tr>
+								<tbody id="expensesInDetail">
+									
 								</tbody>
 							</table>
 						</div>
@@ -350,6 +257,8 @@
 				</div>
 				
 			</div>
+			
+			<div id="userID" hidden><?php echo $_SESSION['logged_id']; ?></div>
 		
 		</section>
 		
